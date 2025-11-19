@@ -4,23 +4,15 @@ const cors = require("cors");
 require('dotenv').config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
-
-app.use(cors());
-app.use(express.json())
-
 const PORT = process.env.PORT || 6001
 
-const users = [
-    {id: 1, Name:"Rehena", department:"Computer Science and Engineering"},
-    {id: 2, Name:"Mehena", department:"Computer Science and Engineering"},
-    {id: 3, Name:"Nehena", department:"Computer Science and Engineering"},
-    {id: 4, Name:"Oehena", department:"Computer Science and Engineering"},
-    {id: 5, Name:"Pehena", department:"Computer Science and Engineering"}
-]
 
 
+// app.use(cors());
+// app.use(express.json())
 
-
+app.use(express.json());
+app.use(cors())
 
 
 const uri = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASS}@cluster0.kc1wnzy.mongodb.net/?appName=Cluster0`;
@@ -42,6 +34,21 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     // Send a ping to confirm a successful connection
+
+    const database = client.db("newsData")
+    const newsCollection = database.collection("news")
+
+
+    app.post('/newsAdd', async(req, res)=>{
+        const news =  req.body 
+        console.log("Add News", news)
+        const resultNews = await newsCollection.insertOne(news)
+        res.send(resultNews)
+        
+    })
+
+  
+
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
@@ -51,24 +58,9 @@ async function run() {
 }
 run().catch(console.dir);
 
-
 app.get('/', (req, res)=>{
-    res.send("Hello Web Browser")
+    res.send("Hello server")
 })
-
-app.get('/users', (req,res)=>{
-    
-    res.send(users)
-})
-
-app.post('/users', (req, res)=>{
-    console.log(req.body);
-    console.log("Post api called")
-    const newUser = req.body;
-    newUser.id = users.length + 1;
-    users.push(newUser);
-    res.send(newUser)
-});
 
 
 app.listen(PORT, ()=>{
