@@ -39,6 +39,12 @@ async function run() {
     const newsCollection = database.collection("news")
 
 
+    app.get('/newsAdd', async(req,res)=>{
+        const newsRes =  newsCollection.find()
+        const result = await newsRes.toArray()
+        res.send(result)
+    })
+
     app.post('/newsAdd', async(req, res)=>{
         const news =  req.body 
         console.log("Add News", news)
