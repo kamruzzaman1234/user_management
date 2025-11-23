@@ -45,6 +45,16 @@ async function run() {
         res.send(result)
     })
 
+
+    
+
+      app.get("/viewDetails/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await newsCollection.findOne(query);
+      res.send(result);
+    });
+
     app.post('/newsAdd', async(req, res)=>{
         const news =  req.body 
         console.log("Add News", news)
@@ -60,6 +70,8 @@ async function run() {
       const deleteRes = await newsCollection.deleteOne(query);
       res.send(deleteRes)
     })
+
+   
 
   
 
